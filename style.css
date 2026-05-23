@@ -252,3 +252,130 @@ form button{
   cursor:pointer;
   font-size:20px;
 }
+
+/* ========================
+   PROFILE SECTION
+======================== */
+
+.profile-section{
+  padding:50px 20px;
+  text-align:center;
+}
+
+.profile-section h2{
+  margin-bottom:30px;
+  font-size:28px;
+}
+
+/* Logged Out View */
+
+.profile-auth{
+  max-width:400px;
+  margin:auto;
+  background:#222;
+  padding:40px 30px;
+  border-radius:15px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+  box-shadow:0 0 15px rgba(255,0,0,0.2);
+}
+
+.profile-auth p{
+  color:#aaa;
+  font-size:16px;
+}
+
+.profile-buttons{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.btn-login,
+.btn-register{
+  padding:14px 30px;
+  border-radius:10px;
+  text-decoration:none;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.btn-login{
+  background:red;
+  color:white;
+}
+
+.btn-login:hover{
+  background:darkred;
+  transform:scale(1.05);
+}
+
+.btn-register{
+  background:transparent;
+  color:red;
+  border:2px solid red;
+}
+
+.btn-register:hover{
+  background:red;
+  color:white;
+  transform:scale(1.05);
+}
+
+/* Logged In View */
+
+.profile-card{
+  max-width:400px;
+  margin:auto;
+  background:#222;
+  padding:40px 30px;
+  border-radius:15px;
+  text-align:center;
+  box-shadow:0 0 15px rgba(255,0,0,0.2);
+}
+
+.profile-avatar{
+  font-size:60px;
+  margin-bottom:10px;
+}
+
+.profile-card h3{
+  color:red;
+  font-size:22px;
+  margin-bottom:20px;
+}
+
+.profile-info{
+  text-align:left;
+  margin-bottom:20px;
+}
+
+.profile-info p{
+  padding:10px 0;
+  border-bottom:1px solid #333;
+  font-size:15px;
+  color:#ccc;
+}
+
+.btn-logout{
+  width:100%;
+  padding:14px;
+  border:none;
+  background:red;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.btn-logout:hover{
+  background:darkred;
+  transform:scale(1.02);
+}

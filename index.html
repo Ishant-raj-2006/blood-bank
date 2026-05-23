@@ -11,14 +11,103 @@
   <script type="module" src="firebase.js"></script>
   <script type="module" src="app.js"></script>
   <script type="module">
-    import { auth } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "signup.html";
+    let isLoggedIn = false;
+    window.isLoggedIn = false;
+
+    onAuthStateChanged(auth, async (user) => {
+      const loggedInView = document.getElementById("profileLoggedIn");
+      const loggedOutView = document.getElementById("profileLoggedOut");
+      const profileName = document.getElementById("profileName");
+      const profileEmail = document.getElementById("profileEmail");
+      const profileBlood = document.getElementById("profileBlood");
+      const profilePhone = document.getElementById("profilePhone");
+
+      if (user) {
+        isLoggedIn = true;
+        window.isLoggedIn = true;
+        loggedInView.style.display = "block";
+        loggedOutView.style.display = "none";
+
+        // Fetch user data from Firestore
+        try {
+          const querySnapshot = await getDocs(collection(db, "users"));
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.email === user.email) {
+              profileName.textContent = data.fullname || user.email;
+              profileEmail.textContent = data.email;
+              profileBlood.textContent = data.bloodGroup || "N/A";
+              profilePhone.textContent = data.phone || "N/A";
+            }
+          });
+        } catch (e) {
+          profileName.textContent = user.email;
+          profileEmail.textContent = user.email;
+        }
+      } else {
+        isLoggedIn = false;
+        window.isLoggedIn = false;
+        loggedInView.style.display = "none";
+        loggedOutView.style.display = "flex";
       }
     });
+
+    // Auth guard - redirect to login if not logged in
+    window.authGuard = function(targetId) {
+      if (!window.isLoggedIn) {
+        window.location.href = "login.html";
+        return false;
+      }
+      document.getElementById(targetId).scrollIntoView({ behavior: "smooth" });
+      return false;
+    };
+
+    // Logout
+    window.logoutUser = async function() {
+      await signOut(auth);
+      alert("Logged out successfully!");
+    };
+
+    // Submit Blood Center
+    window.submitBloodCenter = async function() {
+      const bcName = document.getElementById("bcName").value;
+      const bcState = document.getElementById("bcState").value;
+      const bcDistrict = document.getElementById("bcDistrict").value;
+      const bcCity = document.getElementById("bcCity").value;
+      const bcAddress = document.getElementById("bcAddress").value;
+      const bcPhone = document.getElementById("bcPhone").value;
+      const bcCategory = document.getElementById("bcCategory").value;
+      const bcComponent = document.getElementById("bcComponent").value;
+
+      if (!bcName || !bcState || !bcDistrict || !bcCity || !bcAddress || !bcPhone || !bcCategory) {
+        alert("Please fill all required fields");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "bloodCenters"), {
+          name: bcName,
+          state: bcState,
+          district: bcDistrict,
+          city: bcCity,
+          address: bcAddress,
+          phone: bcPhone,
+          category: bcCategory,
+          componentFacility: bcComponent,
+          addedBy: auth.currentUser.email,
+          createdAt: new Date().toISOString()
+        });
+
+        alert("Blood Center added successfully!");
+        document.getElementById("bloodCenterForm").reset();
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    };
   </script>
 </head>
 <body>
@@ -29,8 +118,9 @@
 
     <ul>
       <li><a href="#">Home</a></li>
-      <li><a href="#donors">Donors</a></li>
-      <li><a href="#request">Request Blood</a></li>
+      <li><a href="#" onclick="return authGuard('donors')">Donors</a></li>
+      <li><a href="#" onclick="return authGuard('request')">Request Blood</a></li>
+      <li><a href="#profile">Profile</a></li>
     </ul>
   </nav>
 
@@ -42,7 +132,7 @@
       Connect blood donors with patients in emergency.
     </p>
 
-    <button onclick="showRequestForm()">
+    <button onclick="authGuard('request')">
       Emergency Request
     </button>
   </section>
@@ -100,6 +190,108 @@
     <h2>Available Donors</h2>
 
     <div id="donorList"></div>
+
+  </section>
+
+  <!-- Profile Section -->
+  <section class="profile-section" id="profile">
+
+    <h2>👤 Profile</h2>
+
+    <!-- Logged Out View -->
+    <div id="profileLoggedOut" class="profile-auth">
+      <p>Please login or register to access all features</p>
+      <div class="profile-buttons">
+        <a href="login.html" class="btn-login">🔑 Login</a>
+        <a href="signup.html" class="btn-register">📝 Register</a>
+      </div>
+    </div>
+
+    <!-- Logged In View -->
+    <div id="profileLoggedIn" style="display:none;">
+
+      <!-- User Info Card -->
+      <div class="profile-card">
+        <div class="profile-avatar">👤</div>
+        <h3 id="profileName">User</h3>
+        <div class="profile-info">
+          <p>📧 <span id="profileEmail">-</span></p>
+          <p>🩸 <span id="profileBlood">-</span></p>
+          <p>📱 <span id="profilePhone">-</span></p>
+        </div>
+        <button onclick="logoutUser()" class="btn-logout">🚪 Logout</button>
+      </div>
+
+      <!-- Add Blood Center -->
+      <div class="blood-center-form" id="bloodCenterSection">
+        <h3>🏥 Add Your Blood Center</h3>
+        <p class="bc-subtitle">Register your blood bank to help save lives in your area</p>
+
+        <form id="bloodCenterForm" onsubmit="event.preventDefault(); submitBloodCenter();">
+
+          <input type="text" id="bcName" placeholder="Blood Bank / Center Name *" required>
+
+          <select id="bcState" required>
+            <option value="">Select State *</option>
+            <option>Andhra Pradesh</option>
+            <option>Arunachal Pradesh</option>
+            <option>Assam</option>
+            <option>Bihar</option>
+            <option>Chhattisgarh</option>
+            <option>Delhi</option>
+            <option>Goa</option>
+            <option>Gujarat</option>
+            <option>Haryana</option>
+            <option>Himachal Pradesh</option>
+            <option>Jharkhand</option>
+            <option>Karnataka</option>
+            <option>Kerala</option>
+            <option>Madhya Pradesh</option>
+            <option>Maharashtra</option>
+            <option>Manipur</option>
+            <option>Meghalaya</option>
+            <option>Mizoram</option>
+            <option>Nagaland</option>
+            <option>Odisha</option>
+            <option>Punjab</option>
+            <option>Rajasthan</option>
+            <option>Sikkim</option>
+            <option>Tamil Nadu</option>
+            <option>Telangana</option>
+            <option>Tripura</option>
+            <option>Uttar Pradesh</option>
+            <option>Uttarakhand</option>
+            <option>West Bengal</option>
+          </select>
+
+          <input type="text" id="bcDistrict" placeholder="District *" required>
+
+          <input type="text" id="bcCity" placeholder="City *" required>
+
+          <textarea id="bcAddress" placeholder="Full Address *" rows="3" required></textarea>
+
+          <input type="tel" id="bcPhone" placeholder="Contact Number *" required>
+
+          <select id="bcCategory" required>
+            <option value="">Select Category *</option>
+            <option>Government</option>
+            <option>Private</option>
+            <option>Red Cross</option>
+            <option>Charitable / Trust</option>
+          </select>
+
+          <select id="bcComponent">
+            <option value="">Component Facility (Optional)</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+
+          <button type="submit">🏥 Register Blood Center</button>
+
+        </form>
+      </div>
+
+    </div>
 
   </section>
 
