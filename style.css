@@ -172,7 +172,9 @@ form button{
   border-radius:10px;
 }
 
-.form-container button{
+/* Register Button */
+
+.form-container > button{
   width:100%;
   padding:15px;
   background:red;
@@ -180,31 +182,46 @@ form button{
   border:none;
   border-radius:10px;
   cursor:pointer;
+  font-size:16px;
 }
 
-/* .captcha-box{
+
+/* CAPTCHA BOX */
+
+.captcha-box{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
   background:#111;
-  padding:10px;
+  border:2px solid red;
   border-radius:10px;
-  margin-top:10px;
+  padding:10px;
+  margin:15px 0;
 }
 
-/* #captchaText{
-  font-size:22px;
-  letter-spacing:3px;
-  color:yellow;
-  font-weight:bold;
-} */
 
-/* #captchaText{
+/* CAPTCHA TEXT */
+
+#captchaText{
   color:white;
   font-size:24px;
   font-weight:bold;
   letter-spacing:5px;
-} */
+}
+
+
+/* CAPTCHA BUTTON */
+
+.captcha-box button{
+  width:60px;
+  height:50px;
+  border:none;
+  background:red;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:20px;
+}
  
 .captcha-box{
   display:flex;
