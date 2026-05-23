@@ -1,0 +1,97 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BloodLink</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <h1>🩸 BloodLink</h1>
+
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#donors">Donors</a></li>
+      <li><a href="#request">Request Blood</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h2>Save Lives With Blood Donation</h2>
+
+    <p>
+      Connect blood donors with patients in emergency.
+    </p>
+
+    <button onclick="showRequestForm()">
+      Emergency Request
+    </button>
+  </section>
+
+  <!-- Blood Request Form -->
+  <section class="request-section" id="request">
+
+    <h2>Request Blood</h2>
+
+    <form id="bloodForm">
+
+      <input type="text"
+      id="name"
+      placeholder="Patient Name"
+      required>
+
+      <select id="bloodGroup" required>
+        <option value="">Select Blood Group</option>
+        <option>A+</option>
+        <option>A-</option>
+        <option>B+</option>
+        <option>B-</option>
+        <option>AB+</option>
+        <option>AB-</option>
+        <option>O+</option>
+        <option>O-</option>
+      </select>
+
+      <input type="text"
+      id="hospital"
+      placeholder="Hospital Name"
+      required>
+
+      <input type="text"
+      id="city"
+      placeholder="City"
+      required>
+
+      <input type="tel"
+      id="phone"
+      placeholder="Phone Number"
+      required>
+
+      <button type="submit">
+        Submit Request
+      </button>
+
+    </form>
+
+  </section>
+
+  <!-- Donor List -->
+  <section class="donor-section" id="donors">
+
+    <h2>Available Donors</h2>
+
+    <div id="donorList"></div>
+
+  </section>
+
+</body>
+</html>
