@@ -169,7 +169,7 @@ window.signup = async function () {
     // Redirect
 
     window.location.href =
-      "login.html";
+      "index.html";
 
   }
 
