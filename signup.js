@@ -1,32 +1,33 @@
-import { auth, db }
-from "./firebase.js";
+// ======================
+// FIREBASE IMPORTS
+// ======================
+
+import { auth, db } from "./firebase.js";
 
 import {
   createUserWithEmailAndPassword
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
   collection,
   addDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// =====================
+// ======================
 // CAPTCHA
-// =====================
+// ======================
 
 let captcha = "";
 
-function generateCaptcha(){
+window.generateCaptcha = function () {
 
   const chars =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
   captcha = "";
 
-  for(let i=0; i<6; i++){
+  for (let i = 0; i < 6; i++) {
 
     captcha += chars.charAt(
       Math.floor(Math.random() * chars.length)
@@ -36,50 +37,52 @@ function generateCaptcha(){
 
   document.getElementById(
     "captchaText"
-  ).innerText = captcha;
+  ).innerHTML = captcha;
 
-}
-
-generateCaptcha();
-
-window.generateCaptcha =
-generateCaptcha;
+};
 
 
-// =====================
-// SIGNUP
-// =====================
+// First Captcha
 
-window.signup = async function(){
+window.generateCaptcha();
+
+
+// ======================
+// SIGNUP FUNCTION
+// ======================
+
+window.signup = async function () {
 
   const fullname =
-  document.getElementById("fullname").value;
+    document.getElementById("fullname").value;
 
   const aadhaar =
-  document.getElementById("aadhaar").value;
+    document.getElementById("aadhaar").value;
 
   const email =
-  document.getElementById("email").value;
+    document.getElementById("email").value;
 
   const phone =
-  document.getElementById("phone").value;
+    document.getElementById("phone").value;
 
   const bloodGroup =
-  document.getElementById("bloodGroup").value;
+    document.getElementById("bloodGroup").value;
 
   const password =
-  document.getElementById("password").value;
+    document.getElementById("password").value;
 
   const confirmPassword =
-  document.getElementById("confirmPassword").value;
+    document.getElementById("confirmPassword").value;
 
   const captchaInput =
-  document.getElementById("captchaInput").value;
+    document.getElementById("captchaInput").value;
 
 
-  // Validation
+  // ======================
+  // VALIDATION
+  // ======================
 
-  if(
+  if (
     fullname === "" ||
     aadhaar === "" ||
     email === "" ||
@@ -88,7 +91,7 @@ window.signup = async function(){
     password === "" ||
     confirmPassword === "" ||
     captchaInput === ""
-  ){
+  ) {
 
     alert("Please fill all fields");
 
@@ -96,9 +99,10 @@ window.signup = async function(){
 
   }
 
+
   // Aadhaar Validation
 
-  if(aadhaar.length !== 12){
+  if (aadhaar.length !== 12) {
 
     alert("Aadhaar Number must be 12 digits");
 
@@ -106,9 +110,10 @@ window.signup = async function(){
 
   }
 
+
   // Password Match
 
-  if(password !== confirmPassword){
+  if (password !== confirmPassword) {
 
     alert("Passwords do not match");
 
@@ -116,33 +121,39 @@ window.signup = async function(){
 
   }
 
-  // Captcha Check
 
-  if(captchaInput !== captcha){
+  // CAPTCHA Validation
+
+  if (captchaInput !== captcha) {
 
     alert("Invalid Captcha");
 
-    generateCaptcha();
+    window.generateCaptcha();
 
     return;
 
   }
 
-  try{
 
-    // Firebase Auth
+  // ======================
+  // FIREBASE SIGNUP
+  // ======================
 
-    const userCredential =
+  try {
+
+    // Authentication
+
     await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
 
+
     // Save User Data
 
     await addDoc(
-      collection(db,"users"),
+      collection(db, "users"),
       {
         fullname,
         aadhaar,
@@ -154,13 +165,18 @@ window.signup = async function(){
 
     alert("Registration Successful");
 
-    window.location.href =
-    "login.html";
 
-  }catch(error){
+    // Redirect
+
+    window.location.href =
+      "login.html";
+
+  }
+
+  catch (error) {
 
     alert(error.message);
 
   }
 
-}
+};

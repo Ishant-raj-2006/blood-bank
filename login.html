@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+  <title>BloodLink Login</title>
+
+  <link rel="stylesheet"
+  href="style.css">
+
+</head>
+
+<body>
+
+<div class="form-container">
+
+  <h2>BloodLink Login</h2>
+
+  <!-- Aadhaar -->
+
+  <input type="text"
+  id="aadhaar"
+  placeholder="Enter Aadhaar Number">
+
+  <!-- Password -->
+
+  <input type="password"
+  id="password"
+  placeholder="Enter Password">
+
+  <!-- CAPTCHA -->
+
+  <div class="captcha-box">
+
+    <span id="captchaText"></span>
+
+    <button type="button"
+    onclick="generateCaptcha()">
+
+      ↻
+
+    </button>
+
+  </div>
+
+  <input type="text"
+  id="captchaInput"
+  placeholder="Fill this captcha">
+
+  <button onclick="login()">
+    Login
+  </button>
+
+  <p>
+    Don't have account?
+    <a href="signup.html">
+      Register
+    </a>
+  </p>
+
+</div>
+
+<script type="module"
+src="login.js"></script>
+
+</body>
+</html>

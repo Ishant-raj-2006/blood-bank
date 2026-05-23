@@ -182,7 +182,7 @@ form button{
   cursor:pointer;
 }
 
-.captcha-box{
+/* .captcha-box{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -192,9 +192,46 @@ form button{
   margin-top:10px;
 }
 
-#captchaText{
+/* #captchaText{
   font-size:22px;
   letter-spacing:3px;
   color:yellow;
   font-weight:bold;
+} */
+
+/* #captchaText{
+  color:white;
+  font-size:24px;
+  font-weight:bold;
+  letter-spacing:5px;
+} */
+ 
+.captcha-box{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#222;
+  border:2px solid red;
+  border-radius:10px;
+  padding:10px;
+  margin:15px 0;
+}
+
+#captchaText{
+  color:white;
+  font-size:24px;
+  font-weight:bold;
+  letter-spacing:5px;
+  flex:1;
+}
+
+.captcha-box button{
+  width:60px;
+  height:50px;
+  border:none;
+  background:red;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:20px;
 }
