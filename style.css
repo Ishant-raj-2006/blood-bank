@@ -146,3 +146,55 @@ form button{
   background:darkred;
   transition:0.3s;
 }
+
+/* Signup Form */
+
+.form-container{
+  width:350px;
+  margin:50px auto;
+  background:#222;
+  padding:30px;
+  border-radius:15px;
+}
+
+.form-container h2{
+  text-align:center;
+  margin-bottom:20px;
+  color:red;
+}
+
+.form-container input,
+.form-container select{
+  width:100%;
+  padding:15px;
+  margin:10px 0;
+  border:none;
+  border-radius:10px;
+}
+
+.form-container button{
+  width:100%;
+  padding:15px;
+  background:red;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.captcha-box{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#111;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+#captchaText{
+  font-size:22px;
+  letter-spacing:3px;
+  color:yellow;
+  font-weight:bold;
+}

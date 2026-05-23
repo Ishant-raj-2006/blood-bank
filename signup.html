@@ -1,35 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Signup</title>
 
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1.0">
+
+  <title>BloodLink Signup</title>
+
+  <link rel="stylesheet"
+  href="style.css">
+
 </head>
+
 <body>
 
 <div class="form-container">
 
-  <h2>Create Account</h2>
+  <h2>Blood Donor Registration</h2>
 
   <input type="text"
-  id="name"
-  placeholder="Full Name">
+  id="fullname"
+  placeholder="Full Name as Aadhaar Card">
+
+  <input type="text"
+  id="aadhaar"
+  placeholder="Aadhaar Number">
 
   <input type="email"
   id="email"
-  placeholder="Email">
+  placeholder="Email Address">
+
+  <input type="tel"
+  id="phone"
+  placeholder="Phone Number">
+
+  <!-- Blood Group -->
+
+  <select id="bloodGroup">
+
+    <option value="">
+      Select Blood Group
+    </option>
+
+    <option>A+</option>
+    <option>A-</option>
+
+    <option>B+</option>
+    <option>B-</option>
+
+    <option>AB+</option>
+    <option>AB-</option>
+
+    <option>O+</option>
+    <option>O-</option>
+
+  </select>
 
   <input type="password"
   id="password"
   placeholder="Password">
 
+  <input type="password"
+  id="confirmPassword"
+  placeholder="Re-enter Password">
+
+  <!-- Captcha -->
+
+  <div class="captcha-box">
+
+    <span id="captchaText"></span>
+
+    <button type="button"
+    onclick="generateCaptcha()">
+
+      ↻
+
+    </button>
+
+  </div>
+
+  <input type="text"
+  id="captchaInput"
+  placeholder="Fill this captcha">
+
   <button onclick="signup()">
-    Signup
+    Register
   </button>
+
+  <p>
+    Already have account?
+    <a href="login.html">
+      Login
+    </a>
+  </p>
 
 </div>
 
-<script type="module" src="signup.js"></script>
+<script type="module"
+src="signup.js"></script>
 
 </body>
 </html>
