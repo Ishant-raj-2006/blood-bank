@@ -65,6 +65,9 @@ window.signup = async function () {
   const phone =
     document.getElementById("phone").value;
 
+  const pinCode =
+    document.getElementById("pinCode").value;
+
   const bloodGroup =
     document.getElementById("bloodGroup").value;
 
@@ -87,6 +90,7 @@ window.signup = async function () {
     aadhaar === "" ||
     email === "" ||
     phone === "" ||
+    pinCode === "" ||
     bloodGroup === "" ||
     password === "" ||
     confirmPassword === "" ||
@@ -110,6 +114,16 @@ window.signup = async function () {
 
   }
 
+
+  // Pin Code Validation
+
+  if (!/^[0-9]{6}$/.test(pinCode)) {
+
+    alert("Please enter a valid 6-digit pin code");
+
+    return;
+
+  }
 
   // Password Match
 
@@ -159,6 +173,7 @@ window.signup = async function () {
         aadhaar,
         email,
         phone,
+        pinCode,
         bloodGroup
       }
     );

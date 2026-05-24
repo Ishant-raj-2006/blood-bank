@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodLink - Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-dashboard {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .admin-header {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 15px rgba(255,0,0,0.2);
+    }
+
+    .admin-header h1 {
+      color: red;
+      margin: 0 0 10px 0;
+    }
+
+    .admin-header p {
+      color: #ccc;
+      margin: 5px 0;
+    }
+
+    .logout-btn {
+      float: right;
+      padding: 10px 20px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .logout-btn:hover {
+      background: darkred;
+    }
+
+    .admin-section {
+      background: #222;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 15px rgba(255,0,0,0.1);
+    }
+
+    .admin-section h2 {
+      color: #ffaa88;
+      margin-top: 0;
+      border-bottom: 2px solid #444;
+      padding-bottom: 15px;
+    }
+
+    .blood-inventory {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .blood-group-card {
+      background: #333;
+      padding: 15px;
+      border-radius: 10px;
+      border-left: 4px solid red;
+      text-align: center;
+    }
+
+    .blood-group-card h3 {
+      color: red;
+      margin: 0 0 10px 0;
+      font-size: 24px;
+    }
+
+    .blood-group-card .units {
+      color: #ffaa88;
+      font-size: 28px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .blood-group-card input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .blood-group-card button {
+      width: 100%;
+      padding: 10px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .blood-group-card button:hover {
+      background: darkred;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #ffaa88;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #333;
+      color: white;
+      font-size: 14px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .update-btn {
+      width: 100%;
+      padding: 12px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .update-btn:hover {
+      background: darkred;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #444;
+    }
+
+    .tab-button {
+      padding: 12px 20px;
+      background: #333;
+      color: #ccc;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-button.active {
+      background: red;
+      color: white;
+      border-bottom-color: red;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .success-msg {
+      background: #2d5016;
+      color: #90ee90;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="admin-dashboard">
+    <!-- Header -->
+    <div class="admin-header">
+      <button class="logout-btn" onclick="adminLogout()">Logout</button>
+      <h1>🏥 Blood Center Admin Dashboard</h1>
+      <p id="centerInfo">Loading...</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchPanel('inventory')">Blood Inventory</button>
+      <button class="tab-button" onclick="switchPanel('info')">Center Information</button>
+    </div>
+
+    <!-- Blood Inventory Panel -->
+    <div id="inventory" class="tab-panel active">
+      <div class="admin-section">
+        <h2>🩸 Blood Inventory Management</h2>
+        <p style="color: #999; margin-bottom: 20px;">Update the available units for each blood group:</p>
+
+        <div id="successMsg"></div>
+
+        <div class="blood-inventory" id="bloodInventory"></div>
+
+        <button class="update-btn" onclick="saveAllInventory()" style="margin-top: 20px;">💾 Save All Updates</button>
+      </div>
+    </div>
+
+    <!-- Center Information Panel -->
+    <div id="info" class="tab-panel">
+      <div class="admin-section">
+        <h2>📋 Blood Center Information</h2>
+
+        <div class="form-group">
+          <label>Blood Center Name</label>
+          <input type="text" id="centerName" placeholder="Blood Center Name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Pin Code</label>
+          <input type="text" id="centerPinCode" placeholder="6-digit pin code" required>
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <textarea id="centerAddress" placeholder="Full Address" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="centerPhone" placeholder="Contact Number" required>
+        </div>
+
+        <div class="form-group">
+          <label>State</label>
+          <select id="centerState" required>
+            <option value="">Select State</option>
+            <option>Andhra Pradesh</option>
+            <option>Arunachal Pradesh</option>
+            <option>Assam</option>
+            <option>Bihar</option>
+            <option>Chhattisgarh</option>
+            <option>Delhi</option>
+            <option>Goa</option>
+            <option>Gujarat</option>
+            <option>Haryana</option>
+            <option>Himachal Pradesh</option>
+            <option>Jharkhand</option>
+            <option>Karnataka</option>
+            <option>Kerala</option>
+            <option>Madhya Pradesh</option>
+            <option>Maharashtra</option>
+            <option>Manipur</option>
+            <option>Meghalaya</option>
+            <option>Mizoram</option>
+            <option>Nagaland</option>
+            <option>Odisha</option>
+            <option>Punjab</option>
+            <option>Rajasthan</option>
+            <option>Sikkim</option>
+            <option>Tamil Nadu</option>
+            <option>Telangana</option>
+            <option>Tripura</option>
+            <option>Uttar Pradesh</option>
+            <option>Uttarakhand</option>
+            <option>West Bengal</option>
+          </select>
+        </div>
+
+        <button class="update-btn" onclick="updateCenterInfo()">Update Center Info</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="admin-dashboard.js"></script>
+
+</body>
+</html>

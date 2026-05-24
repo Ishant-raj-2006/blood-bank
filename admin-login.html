@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodLink - Blood Center Admin Login</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-container {
+      width: 100%;
+      max-width: 450px;
+      margin: 80px auto;
+      background: #222;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255,0,0,0.2);
+    }
+
+    .admin-container h2 {
+      text-align: center;
+      color: red;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .admin-container p {
+      text-align: center;
+      color: #999;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .tab-buttons button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: #333;
+      color: #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .tab-buttons button.active {
+      background: red;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .admin-container input,
+    .admin-container select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .admin-container button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .admin-container button[type="submit"]:hover {
+      background: darkred;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back-link a {
+      color: #ff9999;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link a:hover {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="admin-container">
+    <h2>🏥 Blood Center Admin</h2>
+    <p>Manage your blood center inventory and information</p>
+
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+      <button class="tab-btn" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- Login Tab -->
+    <div id="login" class="tab-content active">
+      <form onsubmit="event.preventDefault(); adminLogin();">
+        <input type="email" id="loginEmail" placeholder="Blood Center Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit">Login to Dashboard</button>
+      </form>
+    </div>
+
+    <!-- Register Tab -->
+    <div id="register" class="tab-content">
+      <form onsubmit="event.preventDefault(); adminRegister();">
+        <input type="text" id="registerCenterName" placeholder="Blood Center / Bank Name *" required>
+        
+        <input type="text" id="registerPinCode" placeholder="Pin Code (6 digits) *" required>
+        
+        <textarea id="registerAddress" placeholder="Complete Address *" rows="3" required></textarea>
+        
+        <input type="tel" id="registerPhone" placeholder="Contact Number *" required>
+        
+        <select id="registerState" required>
+          <option value="">Select State *</option>
+          <option>Andhra Pradesh</option>
+          <option>Arunachal Pradesh</option>
+          <option>Assam</option>
+          <option>Bihar</option>
+          <option>Chhattisgarh</option>
+          <option>Delhi</option>
+          <option>Goa</option>
+          <option>Gujarat</option>
+          <option>Haryana</option>
+          <option>Himachal Pradesh</option>
+          <option>Jharkhand</option>
+          <option>Karnataka</option>
+          <option>Kerala</option>
+          <option>Madhya Pradesh</option>
+          <option>Maharashtra</option>
+          <option>Manipur</option>
+          <option>Meghalaya</option>
+          <option>Mizoram</option>
+          <option>Nagaland</option>
+          <option>Odisha</option>
+          <option>Punjab</option>
+          <option>Rajasthan</option>
+          <option>Sikkim</option>
+          <option>Tamil Nadu</option>
+          <option>Telangana</option>
+          <option>Tripura</option>
+          <option>Uttar Pradesh</option>
+          <option>Uttarakhand</option>
+          <option>West Bengal</option>
+        </select>
+        
+        <input type="email" id="registerEmail" placeholder="Email Address *" required>
+        
+        <input type="password" id="registerPassword" placeholder="Password (min 6 chars) *" required>
+        
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm Password *" required>
+        
+        <button type="submit">Register Blood Center</button>
+      </form>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html">← Back to Home</a>
+    </div>
+  </div>
+
+  <script type="module" src="admin-login.js"></script>
+
+</body>
+</html>

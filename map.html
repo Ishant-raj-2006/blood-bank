@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blood Bank Finder - BloodLink</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #location {
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #555;
+      border-radius: 8px;
+      width: 300px;
+      background: #333;
+      color: white;
+    }
+
+    .search-container {
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .search-container button {
+      padding: 12px 30px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .search-container button:hover {
+      background: darkred;
+    }
+
+    #results {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .blood-bank-card {
+      background: #222;
+      border: 1px solid #444;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255,0,0,0.1);
+    }
+
+    .blood-bank-card h3 {
+      color: #ffaa88;
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+
+    .blood-bank-card p {
+      color: #ccc;
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .blood-bank-card .source {
+      color: #999;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .blood-bank-card a {
+      color: #ffaa88;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .blood-bank-card a:hover {
+      color: #ffccbb;
+    }
+
+    .loading {
+      text-align: center;
+      color: #999;
+      padding: 20px;
+    }
+
+    nav {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <h1>🩸 BloodLink</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#donors">Donors</a></li>
+      <li><a href="index.html#request">Request Blood</a></li>
+      <li><a href="map.html" style="color:#ffff00;">Find Blood Banks</a></li>
+      <li><a href="index.html#profile">Profile</a></li>
+      <li><a href="admin-login.html" style="color:#ffff99;">🏥 Admin</a></li>
+    </ul>
+  </nav>
+
+  <div class="search-container">
+    <h2>🗺️ Find Nearby Blood Banks</h2>
+    <input
+      type="text"
+      id="location"
+      placeholder="Enter pin code or city name"
+    />
+    <button onclick="findBloodBanks()">Search</button>
+    <button onclick="showAllCenters()" style="margin-left: 10px; background: #666;">Browse All</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    window.showAllCenters = async function() {
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = '<div class="loading">🔍 Loading all blood centers...</div>';
+
+      try {
+        const centersQuery = query(collection(db, "bloodCenters"));
+        const snapshot = await getDocs(centersQuery);
+        
+        if (snapshot.empty) {
+          resultsDiv.innerHTML = "<p style='text-align:center; color:#999;'>❌ No blood centers registered yet.</p>";
+          return;
+        }
+
+        let allCenters = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          allCenters.push({
+            name: data.name,
+            address: data.address,
+            phone: data.phone,
+            city: data.city,
+            pinCode: data.pinCode,
+            source: "BloodLink Network"
+          });
+        });
+
+        let output = `<h3 style="text-align:center; color:#ffaa88; margin:20px 0;">All Blood Centers (${allCenters.length})</h3>`;
+
+        allCenters.forEach(center => {
+          output += `
+            <div class="blood-bank-card">
+              <h3>${center.name}</h3>
+              <p><strong>📍 Address:</strong><br>${center.address}</p>
+              ${center.phone ? `<p><strong>📞 Phone:</strong> <a href="tel:${center.phone}">${center.phone}</a></p>` : ""}
+              ${center.pinCode ? `<p><strong>📮 Pin Code:</strong> ${center.pinCode}</p>` : ""}
+              ${center.city ? `<p><strong>🏙️ City:</strong> ${center.city}</p>` : ""}
+              <div class="source">Source: ${center.source}</div>
+            </div>
+          `;
+        });
+
+        resultsDiv.innerHTML = output;
+      } catch (error) {
+        console.error(error);
+        resultsDiv.innerHTML = "<p style='color:red;'>Error loading blood centers. Please try again.</p>";
+      }
+    };
+
+    window.findBloodBanks = async function() {
+      const location = document.getElementById("location").value.trim();
+      
+      if (!location) {
+        alert("Please enter a pin code or city name");
+        return;
+      }
+
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = '<div class="loading">🔍 Searching for blood banks...</div>';
+
+      try {
+        // Fetch from Firestore first (user-added blood centers)
+        let firebaseResults = [];
+        try {
+          const centersQuery = query(collection(db, "bloodCenters"));
+          const snapshot = await getDocs(centersQuery);
+          
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.pinCode === location || data.city?.toLowerCase().includes(location.toLowerCase())) {
+              firebaseResults.push({
+                name: data.name,
+                address: data.address,
+                phone: data.phone,
+                city: data.city,
+                pinCode: data.pinCode,
+                source: "BloodLink Network"
+              });
+            }
+          });
+        } catch (e) {
+          console.log("Firestore fetch error:", e);
+        }
+
+        // Fetch from OpenStreetMap Overpass API
+        const geoRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
+        );
+        const geoData = await geoRes.json();
+
+        if (geoData.length === 0 && firebaseResults.length === 0) {
+          resultsDiv.innerHTML = "<p style='text-align:center; color:#999;'>📍 Location not found. Please try another pin code or city.</p>";
+          return;
+        }
+
+        const lat = geoData[0]?.lat;
+        const lon = geoData[0]?.lon;
+
+        let osmResults = [];
+        if (lat && lon) {
+          const query_str = `
+          [out:json];
+          (
+            node["amenity"="blood_bank"](around:15000,${lat},${lon});
+            way["amenity"="blood_bank"](around:15000,${lat},${lon});
+            relation["amenity"="blood_bank"](around:15000,${lat},${lon});
+          );
+          out center;
+          `;
+
+          const response = await fetch(
+            "https://overpass-api.de/api/interpreter",
+            { method: "POST", body: query_str }
+          );
+
+          const data = await response.json();
+
+          data.elements.forEach(place => {
+            const name = place.tags?.name || "Blood Bank";
+            const address = 
+              place.tags?.["addr:full"] ||
+              place.tags?.street ||
+              place.tags?.["contact:website"] ||
+              "Address not available";
+            const lat = place.lat || place.center?.lat;
+            const lon = place.lon || place.center?.lon;
+
+            osmResults.push({
+              name,
+              address,
+              lat,
+              lon,
+              source: "OpenStreetMap"
+            });
+          });
+        }
+
+        const allResults = [...firebaseResults, ...osmResults];
+
+        if (allResults.length === 0) {
+          resultsDiv.innerHTML = "<p style='text-align:center; color:#999;'>❌ No blood banks found in this area.</p>";
+          return;
+        }
+
+        let output = `<h3 style="text-align:center; color:#ffaa88; margin:20px 0;">Found ${allResults.length} Blood Bank(s)</h3>`;
+
+        allResults.forEach(place => {
+          output += `
+            <div class="blood-bank-card">
+              <h3>${place.name}</h3>
+              <p><strong>📍 Address:</strong><br>${place.address}</p>
+              ${place.phone ? `<p><strong>📞 Phone:</strong> <a href="tel:${place.phone}">${place.phone}</a></p>` : ""}
+              ${place.pinCode ? `<p><strong>📮 Pin Code:</strong> ${place.pinCode}</p>` : ""}
+              ${place.city ? `<p><strong>🏙️ City:</strong> ${place.city}</p>` : ""}
+              ${place.lat && place.lon ? `<p><a href="https://www.google.com/maps?q=${place.lat},${place.lon}" target="_blank">🗺️ View on Google Maps</a></p>` : ""}
+              <div class="source">Source: ${place.source}</div>
+            </div>
+          `;
+        });
+
+        resultsDiv.innerHTML = output;
+      } catch (error) {
+        console.error(error);
+        resultsDiv.innerHTML = "<p style='color:red;'>Error fetching blood banks. Please try again.</p>";
+      }
+    };
+
+    // Allow Enter key to search
+    document.getElementById("location").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        window.findBloodBanks();
+      }
+    });
+  </script>
+
+</body>
+</html>

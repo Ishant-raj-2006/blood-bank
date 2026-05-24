@@ -62,7 +62,11 @@
         window.location.href = "login.html";
         return false;
       }
-      document.getElementById(targetId).scrollIntoView({ behavior: "smooth" });
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.style.display = element.style.display === "none" ? "block" : element.style.display === "block" ? "none" : "block";
+        element.scrollIntoView({ behavior: "smooth" });
+      }
       return false;
     };
 
@@ -78,13 +82,19 @@
       const bcState = document.getElementById("bcState").value;
       const bcDistrict = document.getElementById("bcDistrict").value;
       const bcCity = document.getElementById("bcCity").value;
+      const bcPinCode = document.getElementById("bcPinCode").value;
       const bcAddress = document.getElementById("bcAddress").value;
       const bcPhone = document.getElementById("bcPhone").value;
       const bcCategory = document.getElementById("bcCategory").value;
       const bcComponent = document.getElementById("bcComponent").value;
 
-      if (!bcName || !bcState || !bcDistrict || !bcCity || !bcAddress || !bcPhone || !bcCategory) {
+      if (!bcName || !bcState || !bcDistrict || !bcCity || !bcPinCode || !bcAddress || !bcPhone || !bcCategory) {
         alert("Please fill all required fields");
+        return;
+      }
+
+      if (!/^[0-9]{6}$/.test(bcPinCode)) {
+        alert("Please enter a valid 6-digit pin code for the blood center");
         return;
       }
 
@@ -94,6 +104,7 @@
           state: bcState,
           district: bcDistrict,
           city: bcCity,
+          pinCode: bcPinCode,
           address: bcAddress,
           phone: bcPhone,
           category: bcCategory,
@@ -120,7 +131,9 @@
       <li><a href="#">Home</a></li>
       <li><a href="#" onclick="return authGuard('donors')">Donors</a></li>
       <li><a href="#" onclick="return authGuard('request')">Request Blood</a></li>
+      <li><a href="map.html">Find Banks</a></li>
       <li><a href="#profile">Profile</a></li>
+      <li><a href="admin-login.html" style="color:#ffff99;">🏥 Admin</a></li>
     </ul>
   </nav>
 
@@ -138,7 +151,7 @@
   </section>
 
   <!-- Blood Request Form -->
-  <section class="request-section" id="request">
+  <section class="request-section" id="request" style="display:none;">
 
     <h2>Request Blood</h2>
 
@@ -171,10 +184,18 @@
       placeholder="City"
       required>
 
+      <input type="text"
+      id="pinCode"
+      placeholder="Pin Code"
+      required>
+
       <input type="tel"
       id="phone"
       placeholder="Phone Number"
       required>
+
+      <div id="bloodCenterCount" class="count-message"></div>
+      <p class="api-note">Search nearby blood centers by pin code.</p>
 
       <button type="submit">
         Submit Request
@@ -184,8 +205,8 @@
 
   </section>
 
-  <!-- Donor List -->
-  <section class="donor-section" id="donors">
+  <!-- Donor List (Hidden - Moved to Profile) -->
+  <section class="donor-section" id="donors" style="display:none;">
 
     <h2>Available Donors</h2>
 
@@ -222,8 +243,14 @@
         <button onclick="logoutUser()" class="btn-logout">🚪 Logout</button>
       </div>
 
-      <!-- Add Blood Center -->
-      <div class="blood-center-form" id="bloodCenterSection">
+      <!-- Donors Section in Profile -->
+      <div class="profile-donors">
+        <h3>👥 Available Donors</h3>
+        <div id="profileDonorList"></div>
+      </div>
+
+      <!-- Add Blood Center (Hidden from regular users) -->
+      <div class="blood-center-form" id="bloodCenterSection" style="display:none;">
         <h3>🏥 Add Your Blood Center</h3>
         <p class="bc-subtitle">Register your blood bank to help save lives in your area</p>
         <div class="bc-portal-link">
@@ -271,6 +298,8 @@
           <input type="text" id="bcDistrict" placeholder="District *" required>
 
           <input type="text" id="bcCity" placeholder="City *" required>
+
+          <input type="text" id="bcPinCode" placeholder="Pin Code *" required>
 
           <textarea id="bcAddress" placeholder="Full Address *" rows="3" required></textarea>
 
