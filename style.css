@@ -89,6 +89,77 @@ form button{
   cursor:pointer;
 }
 
+.bc-portal-link{
+  margin:20px auto 0;
+  max-width:500px;
+  text-align:center;
+}
+
+.bc-portal-link p{
+  color:#ccc;
+  margin-bottom:12px;
+}
+
+.btn-portal{
+  display:inline-block;
+  padding:12px 24px;
+  border-radius:10px;
+  background:#ff4d4d;
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.25s ease;
+}
+
+.btn-portal:hover{
+  background:#d63131;
+}
+
+.login-page{
+  min-height:100vh;
+  padding:40px 0 60px;
+}
+
+.login-grid{
+  max-width:1100px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 320px;
+  gap:30px;
+  padding:0 20px;
+}
+
+.login-profile-panel{
+  position:sticky;
+  top:20px;
+  background:#222;
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 0 15px rgba(255,0,0,0.2);
+}
+
+.login-profile-panel h2{
+  color:red;
+  margin-bottom:18px;
+}
+
+.login-profile-panel p{
+  color:#ccc;
+  line-height:1.6;
+  margin-bottom:12px;
+}
+
+@media screen and (max-width:900px){
+  .login-grid{
+    grid-template-columns:1fr;
+  }
+
+  .login-profile-panel{
+    position:static;
+    top:auto;
+  }
+}
+
 #donorList{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
